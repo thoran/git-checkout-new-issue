@@ -1,17 +1,19 @@
 #!/usr/bin/env ruby
-# git-checkout_with_jira
+# git-checkout-new-issue
 
-# 20230704
-# 0.0.0
+# 20230705
+# 0.1.0
 
+# Notes:
+# 1. .env.development.local is expected to be left out of the repo, so that each dev is able to create their own keys.
+# 2. Jira only for now.
+
+require 'active_support/core_ext/string'
 require 'dotenv'
 require 'httparty'
-require 'pry'
 require 'json'
 
-def issue_summary
-  @issue_summary ||= ARGV.join(' ')
-end
+ISSUE_TYPES = %w{Bug Epic Story Task}
 
 def dot_env_path
   File.expand_path('../../.env.development.local', __FILE__)
@@ -22,33 +24,56 @@ def load_env
 end
 
 def email_address
-  abort unless ENV['EMAIL_ADDRESS']
+  abort "EMAIL_ADDRESS is missing from .env.development.local." unless ENV['EMAIL_ADDRESS']
   ENV['EMAIL_ADDRESS']
 end
 
 def jira_api_key
-  abort unless ENV['JIRA_API_KEY']
+  abort "JIRA_API_KEY is missing from .env.development.local." unless ENV['JIRA_API_KEY']
   ENV['JIRA_API_KEY']
 end
 
 def jira_domain
-  abort unless ENV['JIRA_DOMAIN']
+  abort "JIRA_DOMAIN is missing from .env.development.local." unless ENV['JIRA_DOMAIN']
   ENV['JIRA_DOMAIN']
+end
+
+def project_key
+  abort "JIRA_PROJECT_KEY is missing from .env.development.local." unless ENV['JIRA_PROJECT_KEY']
+  ENV['JIRA_PROJECT_KEY']
+end
+
+def issue_type
+  issue_type_candidate = ARGV.first.titlecase
+  if ISSUE_TYPES.include?(issue_type_candidate)
+    ARGV.shift
+    issue_type_candidate
+  else
+    'Task'
+  end
+end
+
+def issue_summary
+  ARGV.join(' ')
+end
+
+def body
+  issue_type = self.issue_type # Ensure this is run first.
+  {
+    fields: {
+      project: {
+        key: project_key
+      },
+      issuetype: {
+        name: issue_type
+      },
+      summary: issue_summary
+    }
+  }
 end
 
 def auth
   Base64.strict_encode64("#{email_address}:#{jira_api_key}")
-end
-
-def body
-  {
-    "fields": {
-      "project": {
-        "id": "10018"
-      },
-      "summary": issue_summary
-    }
-  }
 end
 
 def headers
@@ -85,7 +110,6 @@ end
 def main
   load_env
   issue = create_issue
-  binding.pry
   create_branch(issue)
 end
 
