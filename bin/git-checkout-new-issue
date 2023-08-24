@@ -1,0 +1,92 @@
+#!/usr/bin/env ruby
+# git-checkout_with_jira
+
+# 20230704
+# 0.0.0
+
+require 'dotenv'
+require 'httparty'
+require 'pry'
+require 'json'
+
+def issue_summary
+  @issue_summary ||= ARGV.join(' ')
+end
+
+def dot_env_path
+  File.expand_path('../../.env.development.local', __FILE__)
+end
+
+def load_env
+  Dotenv.load(dot_env_path)
+end
+
+def email_address
+  abort unless ENV['EMAIL_ADDRESS']
+  ENV['EMAIL_ADDRESS']
+end
+
+def jira_api_key
+  abort unless ENV['JIRA_API_KEY']
+  ENV['JIRA_API_KEY']
+end
+
+def jira_domain
+  abort unless ENV['JIRA_DOMAIN']
+  ENV['JIRA_DOMAIN']
+end
+
+def auth
+  Base64.strict_encode64("#{email_address}:#{jira_api_key}")
+end
+
+def body
+  {
+    "fields": {
+      "project": {
+        "id": "10018"
+      },
+      "summary": issue_summary
+    }
+  }
+end
+
+def headers
+  {
+    "Authorization" => "Basic #{auth}",
+    "Content-Type" => "application/json"
+  }
+end
+
+def create_issue
+  HTTParty.post("https://#{jira_domain}.atlassian.net/rest/api/3/issue",
+    body: body.to_json,
+    headers: headers,
+    verify: false
+  )
+end
+
+def branch_label
+  issue_summary.downcase.split(' ').join('_')
+end
+
+def branch_name(issue)
+  "#{issue["key"]}_#{branch_label}"
+end
+
+def command_string(issue)
+  "git checkout -b #{branch_name(issue)}"
+end
+
+def create_branch(issue)
+  system(command_string(issue))
+end
+
+def main
+  load_env
+  issue = create_issue
+  binding.pry
+  create_branch(issue)
+end
+
+main
