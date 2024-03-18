@@ -1,12 +1,8 @@
 #!/usr/bin/env ruby
 # git-checkout-new-issue
 
-# 20230705
-# 0.1.0
-
-# Notes:
-# 1. .env.development.local is expected to be left out of the repo, so that each dev is able to create their own keys.
-# 2. Jira only for now.
+# 20240318
+# 0.2.0
 
 require 'active_support/core_ext/string'
 require 'dotenv'

@@ -1,0 +1,4 @@
+0.2.0
++ README.md: Having a second file in the root of the repo means that Homebrew will install this correctly. No shit.
++ CHANGELOG.txt: While I was at it.
+~ bin/git-checkout-new-issue: Move the notes to README.md.
