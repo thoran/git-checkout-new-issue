@@ -2,7 +2,7 @@
 # git-checkout-new-issue
 
 # 20260807
-# 0.2.1
+# 0.3.0
 
 require 'active_support/core_ext/string'
 require 'dotenv'

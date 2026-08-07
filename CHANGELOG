@@ -1,0 +1,67 @@
+# CHANGELOG
+
+## 20260807
+
+0.3.0: Rewrite CHANGELOG.txt as a CHANGELOG in the form changelogger writes, and add the entries for 0.0.0 and 0.1.0.
+
+1. /CHANGELOG.txt/CHANGELOG/, rewritten with a dated heading per version, the version and its summary on the first line of the body, then the numbered items. The old form carried neither a date nor a summary line, so a commit message could not be taken from it, which is half of what a CHANGELOG is for here.
+2. + Entries for 0.0.0 and 0.1.0, which the file had never reached back to. Both come from changelogger, run over the revisions staged out of the git history, tier 3 inventorying the first and tier 2 diffing the second. Their summaries are written here, tier 2 recording none and tier 3 offering only "(Initial version)", neither of which would serve as a commit message. 0.1.0's rename is added by hand too, tier 2 as it then was comparing structure and so seeing nothing of a change made in a comment.
+3. The entries for 0.2.0 and 0.2.1 are carried across as written, being better than anything a structural diff would produce.
+
+
+## 20260807
+
+0.2.1: Make the script executable.
+
+1. ~ bin/git-checkout-new-issue: mode 100644 --> 100755. A script carrying a shebang and not the bit to go with it cannot be run from a clone at all. Homebrew's bin.install had been setting the bit on the way past, so nothing showed until the formula moved to libexec.install, which keeps whatever mode the repository has.
+
+
+## 20240318
+
+0.2.0: Add a README, so that Homebrew installs the repository correctly.
+
+1. + README.md: Having a second file in the root of the repo means that Homebrew will install this correctly. No shit.
+2. + CHANGELOG.txt: While I was at it.
+3. ~ bin/git-checkout-new-issue: Move the notes to README.md.
+
+
+## 20230705
+
+0.1.0: Rename from git-checkout_with_jira, and take the project key from the environment and the issue type from the command line.
+
+1. /git-checkout_with_jira/git-checkout-new-issue/ in the header. The file was already bin/git-checkout-new-issue at 0.0.0; only the name the script gave itself was left behind.
+2. - require 'pry'
+3. + require 'active_support/core_ext/string'
+4. + project_key()
+5. + issue_type()
+6. ~ email_address()
+7. ~ jira_api_key()
+8. ~ jira_domain()
+9. ~ issue_summary()
+10. ~ body()
+11. ~ main()
+
+
+## 20230704
+
+0.0.0: Create a Jira issue and check out a branch named for it.
+
+1. + require 'dotenv'
+2. + require 'httparty'
+3. + require 'pry'
+4. + require 'json'
+5. + issue_summary()
+6. + dot_env_path()
+7. + load_env()
+8. + email_address()
+9. + jira_api_key()
+10. + jira_domain()
+11. + auth()
+12. + body()
+13. + headers()
+14. + create_issue()
+15. + branch_label()
+16. + branch_name()
+17. + command_string()
+18. + create_branch()
+19. + main()
