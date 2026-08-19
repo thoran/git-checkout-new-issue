@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 20260819
+
+0.3.1: ~ .gitignore: + current default contents
+
+1. ~ .gitignore: + current default contents
+
+
 ## 20260807
 
 0.3.0: Rewrite CHANGELOG.txt as a CHANGELOG in the form changelogger writes, and add the entries for 0.0.0 and 0.1.0.
